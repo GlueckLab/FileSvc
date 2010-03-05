@@ -100,14 +100,14 @@ public class UploadResource extends Resource
                         // Create a new representation based on disk file.
                         // The content is arbitrarily sent as plain text.
                         rep = new StringRepresentation(fi.getString(),
-                                MediaType.TEXT_PLAIN);
+                                MediaType.TEXT_HTML);
                         getResponse().setEntity(rep);
                         getResponse().setStatus(Status.SUCCESS_OK);
                     } 
                     else 
                     {
                         rep = new StringRepresentation("No file data found",
-                                MediaType.TEXT_PLAIN);
+                                MediaType.TEXT_HTML);
                         getResponse().setEntity(rep);
                         getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                     }
@@ -118,7 +118,7 @@ public class UploadResource extends Resource
                     // client as simple plain text
                     getResponse().setEntity(
                             new StringRepresentation("Upload failed: " + e.getMessage(),
-                                    MediaType.TEXT_PLAIN));
+                                    MediaType.TEXT_HTML));
                     getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 }
             }
