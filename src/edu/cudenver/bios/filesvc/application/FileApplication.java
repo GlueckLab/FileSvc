@@ -24,7 +24,7 @@ public class FileApplication extends Application
     {
         super(parentContext);
 
-        FileLogger.getInstance().info("data feed service starting.");
+        FileLogger.getInstance().info("file service starting.");
     }
 
     @Override
@@ -39,10 +39,10 @@ public class FileApplication extends Application
         /* file save-as resource - echos the contents of a file with appropriate
          * headers to initiate a save ad dialog in the client browser
          */
-        router.attach("/file/saveas", SaveAsResource.class);
+        router.attach("/saveas", SaveAsResource.class);
         
         /* file upload resource - echos the contents of a file as text/html */
-        router.attach("/file/upload", UploadResource.class);
+        router.attach("/upload", UploadResource.class);
 
         return router;
     }

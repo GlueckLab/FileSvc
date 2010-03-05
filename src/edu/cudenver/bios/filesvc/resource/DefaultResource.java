@@ -30,7 +30,7 @@ public class DefaultResource extends Resource
     @Override
     public Representation represent(Variant variant) {
         Representation representation = 
-            new StringRepresentation("Statistical Power REST Service", MediaType.TEXT_PLAIN);
+            new StringRepresentation("File SaveAs/Upload REST Service", MediaType.TEXT_PLAIN);
 
         return representation;
     }
