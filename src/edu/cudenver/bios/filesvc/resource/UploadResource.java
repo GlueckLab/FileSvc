@@ -89,9 +89,12 @@ public class UploadResource extends Resource
                     for (final Iterator<FileItem> it = items.iterator(); it.hasNext() && !found;) 
                     {
                         fi = (FileItem) it.next();
-                        if (fi.getFieldName().equals(FORM_TAG_FILE)) found = true;
+                        if (fi.getFieldName().equals(FORM_TAG_FILE)) 
+                        {
+                        	found = true;
+                        	break;
+                        }
                     }
-
                     // Once handled, the content of the uploaded file is sent
                     // back to the client.
                     Representation rep = null;

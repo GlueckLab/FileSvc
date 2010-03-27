@@ -14,7 +14,7 @@ public class FileLogger
     {
         if (instance == null) 
         {
-            instance = Logger.getLogger("edu.cudenver.bios.powersvc.Power");
+            instance = Logger.getLogger("edu.cudenver.bios.filesvc.File");
         }
 
         return instance;
