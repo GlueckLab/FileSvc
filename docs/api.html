@@ -1,0 +1,160 @@
+<!--  
+ * File Service for the GLIMMPSE Software System.  Used for file
+ * uploads, and saving study/result data.  Basically attaches the appropriate
+ * HTTP headers to initiate browser "Save as" events.
+ * 
+ * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+-->
+<head>
+<title>GLIMMPSE: File Service API</title>
+ <STYLE type="text/css">
+  H1 {
+    border-width: 1; border: solid; 
+    text-align: center; 
+    background: #005C84;
+    color: white;
+   ;}
+ 
+ div.toc {
+ }
+ 
+ div.toc1 {
+ 	text-indent: 40px;
+ }
+ 
+ div.toc2 {
+ 	text-indent: 60px;
+ }
+ 
+ td.borderRight {
+ 	border-right: 1px solid #000;
+ 	text-align: center;
+ }
+ </STYLE>
+</head>
+<body>
+<h1>GLIMMPSE: File Service API</h1>
+
+<h2>Introduction</h2>
+
+The Glimmpse software system provides a web based user interface to estimate power and sample size
+for the general linear multivariate model (GLMM) with or without a baseline covariate.  The Glimmpse system
+consists of four main components:
+<ul>
+<li>Glimmpse.com user interface - a Javascript/GWT front-end user interface</li>
+<li>Power Service - RESTful Java web service which processes power/sample size requests</li>
+<li>Chart Service - RESTful Java web service which produces graphs.  For the Glimmpse system, this service
+produces power curves.</li>
+<li><b>File Service</b> - Java web service providing upload/save functionality for study design information</li>
+<li>JavaStatistics library - low level library containing routines for computing GLMM power</li>
+</ul>
+This document describes the API for the File Service.  It assumes basic familiarity with 
+<a href="http://www.w3.org/Protocols/">HTTP</a>, 
+<a href="http://www.w3schools.com/html/html_forms.asp">HTML forms</a>, and the GLMM.  
+For additional background on GLMM power calculations when controlling for a baseline covariate, please see 
+<a href="http://www.ncbi.nlm.nih.gov/pubmed/12898543">Glueck &amp; Muller 2003</a>
+
+<h3>Table of Contents</h3>
+<div class="toc">
+<div class="toc1"><a href="#file">1. The File Service</a></div>
+<div class="toc1"><a href="#upload">2. File Uploads</a></div>
+<div class="toc1"><a href="#saveas">3. Save</a></div>
+</div>
+
+<h2><a name="file">1. The File Service</a></h2>
+<p>
+The File Service component of the Glimmpse system is a Java web service 
+which provides file save and upload capabilities for the Glimmpse user interface.
+The service itself is quite generic, and basically echos data or the contents of an uploaded
+file back to the caller with appropriate headers to initiate browser "save as" or "submit complete" events.
+</p>
+<p>
+The Glimmpse user interface calls this service to allow users to save/upload study design 
+information, and to save power results as a CSV file which can be used with other spreadsheet or 
+statistical software packages.
+</p>
+<p>
+The service is implemented using the <a href="http://www.restlet.org/">Restlet Framework</a>.
+Requests to the file service are received via an <a href="http://www.w3schools.com/html/html_forms.asp">HTML form</a> submission from the Glimmpse user interface.
+</p>
+<p>
+The File Service was developed and tested for use within the <a href="http://tomcat.apache.org/">Apache Tomcat Server (v 6.0)</a>.
+</p>
+
+<h2><a name="upload">1. File Uploads</a></h2>
+
+File uploads requests echo the contents of an uploaded file back to the Glimmpse user interface, or other calling application.
+File upload requests are sent from a <a href="http://google-web-toolkit.googlecode.com/svn/javadoc/1.5/com/google/gwt/user/client/ui/FileUpload.html">Google Web Toolkit (GWT) "FileUpload" component</a>
+within the Glimmpse user interface, and parsed in the File Service with the
+<a href="http://www.restlet.org/documentation/1.0/ext/org/restlet/ext/fileupload/RestletFileUpload.html"> RestletFileUpload extension</a>.
+The RestletFileUpload extension depends on the <a href="http://commons.apache.org/fileupload/">Apache Commons FileUpload library</a> 
+and conforms to <a href="http://www.faqs.org/rfcs/rfc1867.html">RFC 1867, "Form-based File Upload in HTML"</a>.   Under this standard, file upload requests are
+submitted using the POST method and a content type of "multipart/form-data".  The RestletFileUpload component then parses 
+the uploaded file data into a list of FileItem objects.
+<p>
+File uploads are requested through the following URI
+<pre>
+POST /file/upload
+</pre>
+The entity body should be multipart/form-data encoded with the following structure:
+<pre>
+-----------------------------21358143628469
+Content-Disposition: form-data; name="file"; filename="study.xml"
+Content-Type: text/xml
+
+<i>...contents of study.xml file...</i>
+-----------------------------21358143628469--
+</pre>
+where
+<ul>
+<li><b>name</b> - the name of the fileupload form element, which should always be called "file"</li>
+<li><b>filename</b> - the name of the file which was uploaded</li>
+</ul>
+</p>
+The resulting file contents are returned to the caller as media type text/html.  In the Glimmpse user interface,
+the file contents are processed when an <a href="http://google-web-toolkit.googlecode.com/svn/javadoc/1.6/com/google/gwt/user/client/ui/FormPanel.SubmitCompleteEvent.html">"SubmitCompleteEvent"</a> is received.
+
+<h2><a name="saveas">2. Save</a></h2>
+
+To save data from the client browser, the data is sent to the File Service via a form submission.  The contents 
+of the "data" field in the form submission are echoed back to the caller with the following headers attached:
+<pre>
+Content-type: application/force-download
+Content-disposition: attachment; filename=<i>filename</i>
+</pre>
+These headers trigger the client's browser to display the save dialog.  The user can then open the file or 
+download it to their local machine.
+<p></p>
+Saving of data is requested through the following URI:
+<pre>
+POST /file/saveas/
+</pre>
+The entity body is form encoded with the following format:
+<pre>
+filename=<i>filename</i>&amp;data=<i>data</i>
+</pre>
+where
+<ul>
+<li><b>filename</b> - the default filename displayed in the browser's "save as" dialog box</li>
+<li><b>data</b> - contents of the file to be saved</li>
+</ul>
+
+<hr></hr>
+Author: Sarah Kreidler<br/>
+Last Updated: August 2010
+</body>
