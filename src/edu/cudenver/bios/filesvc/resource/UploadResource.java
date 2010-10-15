@@ -1,3 +1,23 @@
+/*
+ * File Service for the GLIMMPSE Software System.  Manages
+ * upload/save requests.
+ * 
+ * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 package edu.cudenver.bios.filesvc.resource;
 
 import java.io.IOException;
@@ -24,33 +44,59 @@ import org.restlet.resource.XmlRepresentation;
 import edu.cudenver.bios.filesvc.application.FileLogger;
 import edu.cudenver.bios.filesvc.representation.ErrorXMLRepresentation;
 
+/**
+ * Resource which performs a file upload and returns the 
+ * data to the calling application.
+ * @author Sarah Kreidler
+ *
+ */
 public class UploadResource extends Resource
 {
     private static final String FORM_TAG_FILE = "file";
+    
+	/**
+	 * Constructor and entry point for file upload requests
+	 * @param context servlet context
+	 * @param request HTTP request information
+	 * @param response HTTP response information
+	 */
     public UploadResource(Context context, Request request, Response response) 
     {
         super(context, request, response);
         getVariants().add(new Variant(MediaType.APPLICATION_XML));
     }
 
+    /**
+     * Disallow get requests to this resource
+     */
     @Override
     public boolean allowGet()
     {
         return false;
     }
 
+    /**
+     * Disallow put requests to this resource
+     */
     @Override
     public boolean allowPut()
     {
         return false;
     }
 
+    /**
+     * Allow post requests to this resource
+     */
     @Override
     public boolean allowPost() 
     {
         return  true;
     }
 
+    /**
+     * Handle POST requests for file upload
+     * @param entity entity body information (multi-part form encoded)
+     */
     @Override
     public void acceptRepresentation(Representation entity) 
     {
