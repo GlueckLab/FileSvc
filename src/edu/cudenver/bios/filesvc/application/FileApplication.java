@@ -1,3 +1,23 @@
+/*
+ * File Service for the GLIMMPSE Software System.  Manages
+ * upload/save requests.
+ * 
+ * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 package edu.cudenver.bios.filesvc.application;
 
 import org.restlet.Application;
@@ -18,7 +38,8 @@ import edu.cudenver.bios.filesvc.resource.UploadResource;
 public class FileApplication extends Application
 {
     /**
-     * @param parentContext
+     * Constructor.
+     * @param parentContext servlet context information
      */
     public FileApplication(Context parentContext) throws Exception
     {
@@ -27,6 +48,10 @@ public class FileApplication extends Application
         FileLogger.getInstance().info("file service starting.");
     }
 
+    /**
+     * Define URI mappings.  Admittedly, this interface is really not very
+     * RESTful, but it does the job
+     */
     @Override
     public Restlet createRoot() 
     {
