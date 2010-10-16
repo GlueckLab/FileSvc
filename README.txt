@@ -80,7 +80,7 @@ ant
 
 The resulting war file is called
 
-${FILE_SERVICE_HOME}/build/bin/power.war
+${FILE_SERVICE_HOME}/build/bin/file.war
 
 The build script assumes that third party libraries are installed in a 
 thirdparty directory at the same level as ${FILE_SERVICE_HOME}.
