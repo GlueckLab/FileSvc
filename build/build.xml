@@ -1,5 +1,5 @@
 <!--
- * Power Service for the GLIMMPSE Software System.  Processes
+ * File Service for the GLIMMPSE Software System.  Processes
  * incoming HTTP requests for power, sample size, and detectable
  * difference
  * 
@@ -35,7 +35,7 @@
 	    <include name="restlet/1.1.6/lib/com.noelios.restlet.ext.servlet_2.5.jar" />
 	    <include name="restlet/1.1.6/lib/org.restlet.ext.fileupload_1.2.jar" />
 		<include name="junit/4.7/lib/junit-4.7.jar" />
-		<include name="log4j/1.2.15/log4j-1.2.15.jar" />
+		<include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
 		<include name="ApacheCommonsFileUpload/1.2/lib/commons-fileupload-1.2.1.jar" />
 		<include name="ApacheCommonsIO/1.4/lib/commons-io-1.4.jar" />
 	</fileset>
@@ -97,11 +97,11 @@
         </war>
     </target>
     
-    <target name="javadoc" depends="compile" description="Generates the API specification (javadoc)">
+    <target name="javadoc" description="Generates the API specification (javadoc)">
         <javadoc packagenames="edu.cudenver.bios.*"
                  sourcepath="${basedir}/../src"
                  classpath="${basedir}/../classes" 
-                 destdir="${basedir}/../docs"
+                 destdir="${javadocdir}"
                  use="true"
                  author="false"
                  version="false"
