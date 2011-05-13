@@ -29,6 +29,8 @@ import org.restlet.resource.Resource;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
 
+import edu.cudenver.bios.filesvc.application.FileConstants;
+
 /**
  * Default request resource.  Called from the URI /power
  * Simply returns a self-identifying message for the server
@@ -57,7 +59,8 @@ public class DefaultResource extends Resource
     @Override
     public Representation represent(Variant variant) {
         Representation representation = 
-            new StringRepresentation("File SaveAs/Upload REST Service", MediaType.TEXT_PLAIN);
+            new StringRepresentation("File SaveAs/Upload REST Service, version " + FileConstants.VERSION,
+            		MediaType.TEXT_PLAIN);
 
         return representation;
     }
