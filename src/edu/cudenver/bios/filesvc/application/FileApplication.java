@@ -23,7 +23,7 @@ package edu.cudenver.bios.filesvc.application;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Restlet;
-import org.restlet.Router;
+import org.restlet.routing.Router;
 
 import edu.cudenver.bios.filesvc.resource.DefaultResource;
 import edu.cudenver.bios.filesvc.resource.SaveAsResource;
@@ -53,7 +53,7 @@ public class FileApplication extends Application
      * RESTful, but it does the job
      */
     @Override
-    public Restlet createRoot() 
+    public Restlet createInboundRoot() 
     {
         // Create a router Restlet that routes each call to a new instance of Resource.
         Router router = new Router(getContext());

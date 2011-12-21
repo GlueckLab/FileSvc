@@ -20,29 +20,18 @@
  */
 package edu.cudenver.bios.filesvc.resource;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.restlet.Context;
-import org.restlet.data.Form;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.ext.fileupload.RestletFileUpload;
-import org.restlet.resource.DomRepresentation;
-import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.ResourceException;
-import org.restlet.resource.StringRepresentation;
-import org.restlet.resource.Variant;
-import org.restlet.resource.XmlRepresentation;
-
-import edu.cudenver.bios.filesvc.application.FileLogger;
-import edu.cudenver.bios.filesvc.representation.ErrorXMLRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
+import org.restlet.resource.Post;
+import org.restlet.resource.ServerResource;
 
 /**
  * Resource which performs a file upload and returns the 
@@ -50,55 +39,21 @@ import edu.cudenver.bios.filesvc.representation.ErrorXMLRepresentation;
  * @author Sarah Kreidler
  *
  */
-public class UploadResource extends Resource
+public class UploadResource extends ServerResource
 {
     private static final String FORM_TAG_FILE = "file";
     
-	/**
-	 * Constructor and entry point for file upload requests
-	 * @param context servlet context
-	 * @param request HTTP request information
-	 * @param response HTTP response information
-	 */
-    public UploadResource(Context context, Request request, Response response) 
-    {
-        super(context, request, response);
-        getVariants().add(new Variant(MediaType.APPLICATION_XML));
-    }
-
-    /**
-     * Disallow get requests to this resource
-     */
-    @Override
-    public boolean allowGet()
-    {
-        return false;
-    }
-
-    /**
-     * Disallow put requests to this resource
-     */
-    @Override
-    public boolean allowPut()
-    {
-        return false;
-    }
-
-    /**
+	 /**
      * Allow post requests to this resource
      */
-    @Override
-    public boolean allowPost() 
-    {
-        return  true;
-    }
+   
 
     /**
      * Handle POST requests for file upload
      * @param entity entity body information (multi-part form encoded)
      */
-    @Override
-    public void acceptRepresentation(Representation entity) 
+    @Post
+    public void upload(Representation entity) 
     {
         if (entity != null) 
         {
