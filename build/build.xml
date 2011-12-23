@@ -34,7 +34,7 @@
 	<fileset id="thirdpartylibs" dir="${thirdpartydir}">
 		<include name="restlet/2.0.10/lib/org.restlet.jar" />
 		<include name="restlet/2.0.10/lib/org.restlet.ext.xml.jar" />
-	    <include name="restlet/2.0.10/lib/org.reslet.ext.servlet.jar" />
+	    <include name="restlet/2.0.10/lib/org.restlet.ext.servlet.jar" />
 	    <include name="restlet/2.0.10/lib/org.restlet.ext.fileupload.jar" />
 		<include name="junit/4.7/lib/junit-4.7.jar" />
 		<include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
