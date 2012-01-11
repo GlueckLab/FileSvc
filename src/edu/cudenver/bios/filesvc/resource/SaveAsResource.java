@@ -22,8 +22,10 @@ package edu.cudenver.bios.filesvc.resource;
 
 import java.io.IOException;
 
+import org.restlet.data.Disposition;
 import org.restlet.data.Form;
 import org.restlet.data.Status;
+import org.restlet.representation.FileRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.resource.Post;
@@ -65,15 +67,20 @@ public class SaveAsResource extends ServerResource
 				throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "No data specified");
 			}
 			// TODO: format to pdf, word, ppt?
-			Form responseHeaders = (Form) getResponse().getAttributes().get("org.restlet.http.headers");  
-			if (responseHeaders == null)  
-			{  
-				responseHeaders = new Form();  
-				getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders);  
-			}  
-			responseHeaders.add("Content-type", "application/force-download");
-			responseHeaders.add("Content-disposition", "attachment; filename=" + filename);
-			return new StringRepresentation(data);
+//			Form responseHeaders = (Form) getResponse().getAttributes().get("org.restlet.http.headers");  
+//			if (responseHeaders == null)  
+//			{  
+//				responseHeaders = new Form();  
+//				getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders);  
+//			}  
+//			responseHeaders.add("Content-type", "application/force-download");
+//			responseHeaders.add("Content-disposition", "attachment; filename=" + filename);
+			Disposition disposition = new Disposition();
+			disposition.setType(Disposition.TYPE_ATTACHMENT);
+			disposition.setFilename(filename);
+			StringRepresentation dataRepresentation = new StringRepresentation(data);
+			dataRepresentation.setDisposition(disposition);
+			return dataRepresentation;
 		}
 		catch (IllegalArgumentException iae)
 		{

@@ -24,6 +24,7 @@ import org.restlet.data.MediaType;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
+import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
@@ -40,7 +41,7 @@ public class DefaultResource extends ServerResource
 	 /**
      * Returns a full representation for a given variant.
      */
-    @Post
+    @Get
     public Representation represent(Variant variant) {
         Representation representation = 
             new StringRepresentation("File SaveAs/Upload REST Service, version " + FileConstants.VERSION,
