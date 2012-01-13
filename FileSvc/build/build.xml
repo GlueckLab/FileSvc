@@ -1,0 +1,180 @@
+<!--
+ * File Service for the GLIMMPSE Software System.  Processes
+ * incoming HTTP requests for power, sample size, and detectable
+ * difference
+ * 
+ * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ -->
+<project name="file" default="test">
+	<property environment="env"/>
+	<property name="catalina.home" value="${env.CATALINA_HOME}" />
+	
+    <property name="svcname" value="file" />
+    <property name="wardir" value="${basedir}/war" />
+    <property name="sourcedir" value="${basedir}/../src" />
+    <property name="bindir" value="${basedir}/bin" />
+    <property name="wcdir" value="${basedir}/../WebContent" />
+	<property name="thirdpartydir" value="${basedir}/../../thirdparty" />
+	<property name="javadocdir" value="${basedir}/javadoc/FileSvc-javadoc" />
+	
+	<fileset id="thirdpartylibs" dir="${thirdpartydir}">
+		<include name="restlet/2.0.10/lib/org.restlet.jar" />
+		<include name="restlet/2.0.10/lib/org.restlet.ext.xml.jar" />
+	    <include name="restlet/2.0.10/lib/org.restlet.ext.servlet.jar" />
+	    <include name="restlet/2.0.10/lib/org.restlet.ext.fileupload.jar" />
+		<include name="junit/4.7/lib/junit-4.7.jar" />
+		<include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
+		<include name="ApacheCommonsFileUpload/1.2/lib/commons-fileupload-1.2.1.jar" />
+		<include name="ApacheCommonsIO/1.4/lib/commons-io-1.4.jar" />
+	</fileset>
+
+	<path id="libraries">
+		<fileset refid="thirdpartylibs"/>
+		<!-- compile against servlet-api, but don't copy into warfile
+		since it's already included with Tomcat -->
+		<fileset dir="${thirdpartydir}">
+			<include name="ServletAPI/2.5/lib/servlet-api.jar" />
+		</fileset>
+	</path>
+		
+    <target name="clean">
+        <delete dir="${wardir}"/>
+        <delete dir="${bindir}"/>
+        <delete dir="${javadocdir}"/>
+        <mkdir dir="${wardir}"/>
+        <mkdir dir="${bindir}"/>
+    </target>
+
+    <target name="compile" depends="clean, copy-resources">
+      <javac debug="true"
+             deprecation="on"
+             listfiles="true"
+             debuglevel="lines,vars,source"
+             srcdir="${sourcedir}"
+             destdir="${wardir}/WEB-INF/classes"
+             classpathref="libraries"
+      />
+    </target>
+
+    <target name="copy-resources">
+        <copy todir="${wardir}/WEB-INF/classes">
+            <fileset dir="${sourcedir}">
+                <exclude name="**/*.java" />
+            </fileset>
+        </copy>
+        <copy todir="${wardir}">
+            <fileset dir="${wcdir}">
+                <exclude name="**/.svn/**/*" />
+            </fileset>
+        </copy>
+        <copy todir="${wardir}/WEB-INF/lib" flatten="true" >
+            <fileset refid="thirdpartylibs" />
+        </copy>
+    </target>
+
+    <!-- Build the project's web application.  -->
+    <target name="compress" depends="compile">              
+        <echo>webapps DIR IS ${bindir}</echo>
+        <war destfile="${bindir}/${svcname}.war" webxml="${wardir}/WEB-INF/web.xml">
+            <webinf dir="${wardir}/WEB-INF" excludes="**/web.xml"/>
+            <classes dir="${wardir}/WEB-INF/classes"/>
+            <classes dir="../config">
+                <include name="log4j.properties"/>
+            </classes>
+            <lib dir="${wardir}/WEB-INF/lib" includes="**/*.jar"/>
+        </war>
+    </target>
+    
+    <target name="javadoc" description="Generates the API specification (javadoc)">
+        <javadoc packagenames="edu.cudenver.bios.*"
+                 sourcepath="${basedir}/../src"
+                 classpath="${basedir}/../classes" 
+                 destdir="${javadocdir}"
+                 use="true"
+                 author="false"
+                 version="false"
+                 windowtitle="File Service API Specification"
+                 doctitle="File Service API Specification">
+            <header><![CDATA[<p><b>power service</b></p>]]></header>
+            <bottom><![CDATA[<font size=1>CU Denver Biostatistic Department</font>]]></bottom>
+            <link href="http://java.sun.com/javase/6/docs/api"/>
+        </javadoc>
+    </target>
+    
+    <target name="test" depends="compress">
+    	<!--
+        <junit printsummary="yes" haltonfailure="yes" showoutput="true" fork="true">
+            <classpath>
+              <path refid="libraries" />
+              <pathelement location="${wardir}/WEB-INF/classes"/>
+            </classpath>
+            <formatter type="plain" />
+            <test name="TDB" />
+        </junit> -->
+    </target>
+	
+	<target name="deploy" description="This target moves the ${svcname}.war 
+		to the user's catalina.home\webapps directory." >
+		<copy todir="${catalina.home}\webapps">
+			<fileset dir="${bindir}">
+				<include name="${svcname}.war"/>
+			</fileset>
+		</copy>
+		<echo>Deployed the ${svcname}.war to ${catalina.home}\webapps</echo>
+	</target>
+	
+	<target name="buildDeploy" depends="test, deploy"/>
+
+	<!-- Create the javadoc distribution  -->
+	<target name="javadoc-distribution" depends="javadoc">
+		<jar destfile="${bindir}/${svcname}-javadoc.jar" basedir="${javadocdir}/.." >
+			<manifest>
+				<attribute name="Author" value="Sarah Kreidler"/>
+				<section name="Shared">
+					<attribute name="Title" value="${svcname} Javadoc"/>
+					<attribute name="Vendor" value="CU Denver Biostatistics Department"/>
+				</section>
+				<section name="Copyright">
+					<attribute name="Copy" value="(C) CU Denver Biostatistics Department"/>
+				</section>
+			</manifest>
+		</jar>
+	</target>
+	
+	<!-- Create the source distribution -->
+	<target name="source-distribution">
+		<jar destfile="${bindir}/${svcname}-source.jar" basedir="${basedir}/../.." 
+			includes="FileSvc/*,
+							FileSvc/build/build.xml,
+							FileSvc/config/**,
+							FileSvc/src/**,
+							FileSvc/text/**,
+							FileSvc/WebContent/**">
+			<manifest>
+				<attribute name="Author" value="Sarah Kreidler"/>
+				<section name="Shared">
+					<attribute name="Title" value="File Service version 1.0.0 Source Code"/>
+					<attribute name="Vendor" value="CU Denver Biostatistics Department"/>
+				</section>
+				<section name="Copyright">
+					<attribute name="Copy" value="(C) CU Denver Biostatistics Department"/>
+				</section>
+			</manifest>
+		</jar>
+	</target>
+	
+</project>
