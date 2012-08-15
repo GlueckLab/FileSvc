@@ -43,8 +43,11 @@ public class DefaultResource extends ServerResource
      */
     @Get
     public Representation represent(Variant variant) {
+        String version = 
+                getApplication().getContext().getParameters().getFirstValue(
+                        "edu.ucdenver.bios.filesvc.application.version");
         Representation representation = 
-            new StringRepresentation("File SaveAs/Upload REST Service, version " + FileConstants.VERSION,
+            new StringRepresentation("File Service, version " + version,
             		MediaType.TEXT_PLAIN);
 
         return representation;
