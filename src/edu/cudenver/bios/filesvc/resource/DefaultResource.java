@@ -20,14 +20,13 @@
  */
 package edu.cudenver.bios.filesvc.resource;
 
-import org.restlet.Context;
 import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.StringRepresentation;
-import org.restlet.resource.Variant;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
+import org.restlet.representation.Variant;
+import org.restlet.resource.Get;
+import org.restlet.resource.Post;
+import org.restlet.resource.ServerResource;
 
 import edu.cudenver.bios.filesvc.application.FileConstants;
 
@@ -37,29 +36,18 @@ import edu.cudenver.bios.filesvc.application.FileConstants;
  * 
  * @author Sarah Kreidler
  */
-public class DefaultResource extends Resource
+public class DefaultResource extends ServerResource
 {
-	/**
-	 * Constructor.
-	 * @param context servlet context
-	 * @param request HTTP request information
-	 * @param response HTTP response information
-	 */
-    public DefaultResource(Context context, Request request, Response response) 
-    {
-        super(context, request, response);
-
-        // This representation has only one type of representation.
-        getVariants().add(new Variant(MediaType.TEXT_PLAIN));
-    }
-
-    /**
+	 /**
      * Returns a full representation for a given variant.
      */
-    @Override
+    @Get
     public Representation represent(Variant variant) {
+        String version = 
+                getApplication().getContext().getParameters().getFirstValue(
+                        "edu.ucdenver.bios.filesvc.application.version");
         Representation representation = 
-            new StringRepresentation("File SaveAs/Upload REST Service, version " + FileConstants.VERSION,
+            new StringRepresentation("File Service, version " + version,
             		MediaType.TEXT_PLAIN);
 
         return representation;
