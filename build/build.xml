@@ -1,8 +1,8 @@
 <!--
  * File Service for the GLIMMPSE Software System.  Processes
  * incoming HTTP requests for file save and upload
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * Copyright (C) 2010 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,75 +19,75 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  -->
 <project name="File Web Service" default="distributions">
-	<!-- when releasing software, this is the only place the version information
-			should be specified. Appropriate changes to the manifest and source
-			code will be performed by the build -->
-	<property name="svc.version" value="dev" />
-	<!-- optional suffix if we have multiple versions of the warfile 
-			running on the same tomcat -->
-	<condition property="warfile.suffix" value="">
-	   <not>  
-	      <isset property=""/>
-	   </not>
-	</condition>
-	<!-- specify the tomcat location as a build argument if using the deploy target -->
-	<condition property="tomcat.home" value="">
-	   <not>  
-	      <isset property=""/>
-	   </not>
-	</condition>
+    <!-- when releasing software, this is the only place the version information
+            should be specified. Appropriate changes to the manifest and source
+            code will be performed by the build -->
+    <property name="svc.version" value="dev" />
+    <!-- optional suffix if we have multiple versions of the warfile
+            running on the same tomcat -->
+    <condition property="warfile.suffix" value="">
+       <not>
+          <isset property=""/>
+       </not>
+    </condition>
+    <!-- specify the tomcat location as a build argument if using the deploy target -->
+    <condition property="tomcat.home" value="">
+       <not>
+          <isset property=""/>
+       </not>
+    </condition>
     <!-- main properties -->
-	<property name="owner" value="University of Colorado Denver, 
-		Department of Biostatistics and Informatics" />
+    <property name="owner" value="University of Colorado Denver,
+        Department of Biostatistics and Informatics" />
     <property name="svc.name" value="file${warfile.suffix}" />
     <property name="source.dir" value="${basedir}/../src" />
     <property name="wc.dir" value="${basedir}/../WebContent" />
     <property name="tmp.dir" value="${basedir}/tmp" />
     <property name="war.dir" value="${tmp.dir}/war" />
     <property name="artifacts.dir" value="${basedir}/artifacts" />
-	<property name="javadoc.dir" value="${tmp.dir}/${svc.name}-${svc.version}-javadoc" />
-	<property name="thirdparty.dir" value="${basedir}/../../thirdparty" />
+    <property name="javadoc.dir" value="${tmp.dir}/${svc.name}-${svc.version}-javadoc" />
+    <property name="thirdparty.dir" value="${basedir}/../../thirdparty" />
 
-	<!-- Third party libraries -->
-	<fileset id="thirdpartylibs" dir="${thirdparty.dir}">
-		<include name="restlet/2.0.10/lib/org.restlet.jar" />
-		<include name="restlet/2.0.10/lib/org.restlet.ext.xml.jar" />
-	    <include name="restlet/2.0.10/lib/org.restlet.ext.servlet.jar" />
-	    <include name="restlet/2.0.10/lib/org.restlet.ext.fileupload.jar" />
-		<include name="junit/4.7/lib/junit-4.7.jar" />
-		<include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
-		<include name="ApacheCommonsFileUpload/1.2/lib/commons-fileupload-1.2.1.jar" />
-		<include name="ApacheCommonsIO/1.4/lib/commons-io-1.4.jar" />
-	</fileset>
+    <!-- Third party libraries -->
+    <fileset id="thirdpartylibs" dir="${thirdparty.dir}">
+        <include name="restlet/2.0.10/lib/org.restlet.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.xml.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.servlet.jar" />
+        <include name="restlet/2.0.10/lib/org.restlet.ext.fileupload.jar" />
+        <include name="junit/4.7/lib/junit-4.7.jar" />
+        <include name="log4j/1.2.15/lib/log4j-1.2.15.jar" />
+        <include name="ApacheCommonsFileUpload/1.2/lib/commons-fileupload-1.2.1.jar" />
+        <include name="ApacheCommonsIO/1.4/lib/commons-io-1.4.jar" />
+    </fileset>
 
-	<!-- complete classpath -->
-	<path id="libraries">
-		<fileset refid="thirdpartylibs"/>
-		<!-- compile against servlet-api, but don't copy into warfile
-		since it's already included with Tomcat -->
-		<fileset dir="${thirdparty.dir}">
-			<include name="ServletAPI/2.5/lib/servlet-api.jar" />
-		</fileset>
-	</path>
-		
-	<!-- remove artifacts from previous build -->
+    <!-- complete classpath -->
+    <path id="libraries">
+        <fileset refid="thirdpartylibs"/>
+        <!-- compile against servlet-api, but don't copy into warfile
+        since it's already included with Tomcat -->
+        <fileset dir="${thirdparty.dir}">
+            <include name="ServletAPI/2.5/lib/servlet-api.jar" />
+        </fileset>
+    </path>
+
+    <!-- remove artifacts from previous build -->
     <target name="clean">
         <delete dir="${tmp.dir}"/>
         <delete dir="${artifacts.dir}"/>
-    	<delete>
-    	    <fileset dir="." includes="TEST-*"/>
-    	</delete>
+        <delete>
+            <fileset dir="." includes="TEST-*"/>
+        </delete>
     </target>
-	
-	<!-- create directories for new build -->
-	<target name="setup" depends="clean">
+
+    <!-- create directories for new build -->
+    <target name="setup" depends="clean">
         <mkdir dir="${artifacts.dir}"/>
         <mkdir dir="${tmp.dir}"/>
         <mkdir dir="${war.dir}"/>
         <mkdir dir="${javadoc.dir}"/>
-	</target>
+    </target>
 
-	<!-- compile the source code -->
+    <!-- compile the source code -->
     <target name="compile" depends="setup,copy-resources">
       <javac debug="true"
              deprecation="on"
@@ -99,7 +99,7 @@
       />
     </target>
 
-	<!-- setup temprary warfile directory and copy required libraries -->
+    <!-- setup temprary warfile directory and copy required libraries -->
     <target name="copy-resources">
         <copy todir="${war.dir}/WEB-INF/classes">
             <fileset dir="${source.dir}">
@@ -112,33 +112,33 @@
         <copy todir="${war.dir}">
             <fileset dir="${wc.dir}">
                 <exclude name="**/.svn/**/*" />
-            	<exclude name="test/*" />
+                <exclude name="test/*" />
             </fileset>
         </copy>
         <copy todir="${war.dir}/WEB-INF/lib" flatten="true" >
-        		<fileset refid="thirdpartylibs" />
+                <fileset refid="thirdpartylibs" />
         </copy>
     </target>
 
     <!-- Build the project's war file.  -->
-    <target name="compress" depends="compile">              
-    	<replace file="${war.dir}/WEB-INF/web.xml" token="UNKNOWN" value="${svc.version}"/>
+    <target name="compress" depends="compile">
+        <replace file="${war.dir}/WEB-INF/web.xml" token="UNKNOWN" value="${svc.version}"/>
         <war destfile="${artifacts.dir}/${svc.name}.war" webxml="${war.dir}/WEB-INF/web.xml">
             <webinf dir="${war.dir}/WEB-INF" excludes="**/web.xml"/>
-			<manifest>
-				<attribute name="Manifest-Version" value="${svc.version}" />
-			</manifest>
+            <manifest>
+                <attribute name="Manifest-Version" value="${svc.version}" />
+            </manifest>
             <classes dir="${war.dir}/WEB-INF/classes"/>
             <lib dir="${war.dir}/WEB-INF/lib" includes="**/*.jar"/>
         </war>
     </target>
-    
-	<!-- run javadoc -->
-    <target name="javadoc" depends="compress" 
-    	description="Generates the API specification (javadoc)">
+
+    <!-- run javadoc -->
+    <target name="javadoc" depends="compress"
+        description="Generates the API specification (javadoc)">
         <javadoc packagenames="edu.cudenver.bios.*"
                  access="public"
-                 classpath="${basedir}/../classes" 
+                 classpath="${basedir}/../classes"
                  destdir="${javadoc.dir}"
                  use="true"
                  author="true"
@@ -156,8 +156,8 @@
             <link href="http://java.sun.com/javase/6/docs/api"/>
         </javadoc>
     </target>
-    
-	<!-- build the app then run the unit tests -->
+
+    <!-- build the app then run the unit tests -->
     <target name="test" depends="javadoc">
         <junit printsummary="yes" haltonfailure="yes" showoutput="true" fork="true">
             <classpath>
@@ -167,56 +167,56 @@
             <formatter type="plain" />
         </junit>
     </target>
-	
-	<!-- deploy to the local tomcat  -->
-	<target name="deploy" depends="test" description="This target moves the ${svcname}.war 
-		to the user's tomcat.home\webapps directory." >
-		<copy todir="${tomcat.home}\webapps">
-			<fileset dir="${bin.dir}">
-				<include name="${svc.name}.war"/>
-			</fileset>
-		</copy>
-		<echo>Deployed the ${svc.name}.war to ${tomcat.home}\webapps</echo>
-	</target>
-	
-	<!-- Create the javadoc distribution  -->	
-	<target name="distribution.javadoc" >
-		<zip destfile="${artifacts.dir}/${svc.name}-${svc.version}-javadoc.zip" basedir="${javadoc.dir}/.." >
-			<zipfileset dir="${javadoc.dir}" />
-			<zipfileset file="${basedir}/../LICENSE-gpl2.0.txt"/>
-		    <zipfileset file="${basedir}/../README.txt"/>
-		</zip>
-	</target>
-	
-	<!-- Create the source distribution -->
-	<target name="distribution.source">
-		<zip destfile="${artifacts.dir}/${svc.name}-${svc.version}-source.zip"  >
-			<zipfileset dir="${basedir}/../.."  
-						includes="FileSvc/*,
-							FileSvc/build/build.xml,
-							FileSvc/config/**,
-							FileSvc/src/**,
-							FileSvc/text/**,
-							FileSvc/WebContent/**"
-						excludes="FileSvc/bin/**" />	
-			<zipfileset file="${basedir}/../LICENSE-gpl2.0.txt"/>
-		    <zipfileset file="${basedir}/../README.txt"/>
-		</zip>
-	</target>
-	
-	<!-- Create the binary distribution -->
-	<target name="distribution.binary">
-		<zip destfile="${artifacts.dir}/${svc.name}-${svc.version}-binary.zip" >
-			<zipfileset file="${artifacts.dir}/${svc.name}.war" />	
-			<zipfileset file="${basedir}/../LICENSE-gpl2.0.txt"/>
-		    <zipfileset file="${basedir}/../README.txt"/>
-		</zip>
-	</target>
-	
-	<!-- build all distributions -->
-	<target name="distributions" 
-		depends="test,
-		distribution.binary,
-		distribution.javadoc,
-		distribution.source"/>
+
+    <!-- deploy to the local tomcat  -->
+    <target name="deploy" depends="test" description="This target moves the ${svcname}.war
+        to the user's tomcat.home\webapps directory." >
+        <copy todir="${tomcat.home}\webapps">
+            <fileset dir="${bin.dir}">
+                <include name="${svc.name}.war"/>
+            </fileset>
+        </copy>
+        <echo>Deployed the ${svc.name}.war to ${tomcat.home}\webapps</echo>
+    </target>
+
+    <!-- Create the javadoc distribution  -->
+    <target name="distribution.javadoc" >
+        <zip destfile="${artifacts.dir}/${svc.name}-${svc.version}-javadoc.zip" basedir="${javadoc.dir}/.." >
+            <zipfileset dir="${javadoc.dir}" />
+            <zipfileset file="${basedir}/../LICENSE-gpl2.0.txt"/>
+            <zipfileset file="${basedir}/../README.txt"/>
+        </zip>
+    </target>
+
+    <!-- Create the source distribution -->
+    <target name="distribution.source">
+        <zip destfile="${artifacts.dir}/${svc.name}-${svc.version}-source.zip"  >
+            <zipfileset dir="${basedir}/../.."
+                        includes="FileSvc/*,
+                            FileSvc/build/build.xml,
+                            FileSvc/config/**,
+                            FileSvc/src/**,
+                            FileSvc/text/**,
+                            FileSvc/WebContent/**"
+                        excludes="FileSvc/bin/**" />
+            <zipfileset file="${basedir}/../LICENSE-gpl2.0.txt"/>
+            <zipfileset file="${basedir}/../README.txt"/>
+        </zip>
+    </target>
+
+    <!-- Create the binary distribution -->
+    <target name="distribution.binary">
+        <zip destfile="${artifacts.dir}/${svc.name}-${svc.version}-binary.zip" >
+            <zipfileset file="${artifacts.dir}/${svc.name}.war" />
+            <zipfileset file="${basedir}/../LICENSE-gpl2.0.txt"/>
+            <zipfileset file="${basedir}/../README.txt"/>
+        </zip>
+    </target>
+
+    <!-- build all distributions -->
+    <target name="distributions"
+        depends="test,
+        distribution.binary,
+        distribution.javadoc,
+        distribution.source"/>
 </project>

@@ -1,8 +1,8 @@
 /*
  * File Service for the GLIMMPSE Software System.  Manages
  * upload/save requests.
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * Copyright (C) 2010 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,7 +31,7 @@ import edu.cudenver.bios.filesvc.resource.UploadResource;
 
 /**
  * Restlet Application for basic file upload/save
- * 
+ *
  * @author Sarah Kreidler
  *
  */
@@ -53,7 +53,7 @@ public class FileApplication extends Application
      * RESTful, but it does the job
      */
     @Override
-    public Restlet createInboundRoot() 
+    public Restlet createInboundRoot()
     {
         // Create a router Restlet that routes each call to a new instance of Resource.
         Router router = new Router(getContext());
@@ -65,7 +65,7 @@ public class FileApplication extends Application
          * headers to initiate a save ad dialog in the client browser
          */
         router.attach("/saveas", SaveAsResource.class);
-        
+
         /* file upload resource - echos the contents of a file as text/html */
         router.attach("/upload", UploadResource.class);
 
