@@ -1,8 +1,8 @@
 /*
  * File Service for the GLIMMPSE Software System.  Manages
  * upload/save requests.
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * Copyright (C) 2010 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -40,50 +40,50 @@ import edu.cudenver.bios.filesvc.representation.ErrorXMLRepresentation;
  * header to force the Save As dialog in the browser.
  * (Could not find a browser independent method for this on the
  * client-side)
- * 
+ *
  * @author Sarah Kreidler
  *
  */
 public class SaveAsResource extends ServerResource
 {
 
-	/**
-	 * Handle POST requests for file save
-	 * @param entity entity body information (form encoded)
-	 */
-	@Post 
-	public Representation saveAs(Representation entity) throws ResourceException
-	{
-		try
-		{
-			// build the response xml
-			Form form = new Form(entity);
-			String filename = form.getFirstValue("filename");
-			if (filename == null || filename.isEmpty()) filename = "out.xml";
-			String format = form.getFirstValue("format");
-			String data = form.getFirstValue("data");
-			if (data == null)
-			{
-				throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "No data specified");
-			}
-			// TODO: format to pdf, word, ppt?
-			Disposition disposition = new Disposition();
-			disposition.setType(Disposition.TYPE_ATTACHMENT);
-			disposition.setFilename(filename);
-			StringRepresentation dataRepresentation = new StringRepresentation(data);
-			dataRepresentation.setDisposition(disposition);
-			return dataRepresentation;
-		}
-		catch (IllegalArgumentException iae)
-		{
-			FileLogger.getInstance().error(iae.getMessage());
-			try { getResponse().setEntity(new ErrorXMLRepresentation(iae.getMessage())); }
-			catch (IOException e) {}
-			getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
-			throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, iae.getMessage());
-		}
-		//return entity;
+    /**
+     * Handle POST requests for file save
+     * @param entity entity body information (form encoded)
+     */
+    @Post
+    public Representation saveAs(Representation entity) throws ResourceException
+    {
+        try
+        {
+            // build the response xml
+            Form form = new Form(entity);
+            String filename = form.getFirstValue("filename");
+            if (filename == null || filename.isEmpty()) filename = "out.xml";
+            String format = form.getFirstValue("format");
+            String data = form.getFirstValue("data");
+            if (data == null)
+            {
+                throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, "No data specified");
+            }
+            // TODO: format to pdf, word, ppt?
+            Disposition disposition = new Disposition();
+            disposition.setType(Disposition.TYPE_ATTACHMENT);
+            disposition.setFilename(filename);
+            StringRepresentation dataRepresentation = new StringRepresentation(data);
+            dataRepresentation.setDisposition(disposition);
+            return dataRepresentation;
+        }
+        catch (IllegalArgumentException iae)
+        {
+            FileLogger.getInstance().error(iae.getMessage());
+            try { getResponse().setEntity(new ErrorXMLRepresentation(iae.getMessage())); }
+            catch (IOException e) {}
+            getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+            throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, iae.getMessage());
+        }
+        //return entity;
 
-	}
+    }
 
 }
