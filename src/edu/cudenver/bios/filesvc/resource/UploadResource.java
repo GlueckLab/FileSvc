@@ -1,8 +1,8 @@
 /*
  * File Service for the GLIMMPSE Software System.  Manages
  * upload/save requests.
- * 
- * Copyright (C) 2010 Regents of the University of Colorado.  
+ *
+ * Copyright (C) 2010 Regents of the University of Colorado.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
 /**
- * Resource which performs a file upload and returns the 
+ * Resource which performs a file upload and returns the
  * data to the calling application.
  * @author Sarah Kreidler
  *
@@ -42,23 +42,23 @@ import org.restlet.resource.ServerResource;
 public class UploadResource extends ServerResource
 {
     private static final String FORM_TAG_FILE = "file";
-    
-	 /**
+
+     /**
      * Allow post requests to this resource
      */
-   
+
 
     /**
      * Handle POST requests for file upload
      * @param entity entity body information (multi-part form encoded)
      */
     @Post
-    public void upload(Representation entity) 
+    public void upload(Representation entity)
     {
-        if (entity != null) 
+        if (entity != null)
         {
             if (MediaType.MULTIPART_FORM_DATA.equals(entity.getMediaType(),
-                    true)) 
+                    true))
             {
 
                 // The Apache FileUpload project parses HTTP requests which
@@ -77,7 +77,7 @@ public class UploadResource extends ServerResource
                 // generates FileItems.
                 RestletFileUpload upload = new RestletFileUpload(factory);
                 List<FileItem> items;
-                try 
+                try
                 {
                     // 3. Request is parsed by the handler which generates a
                     // list of FileItems
@@ -87,19 +87,19 @@ public class UploadResource extends ServerResource
                     // save it on disk
                     boolean found = false;
                     FileItem fi = null;
-                    for (final Iterator<FileItem> it = items.iterator(); it.hasNext() && !found;) 
+                    for (final Iterator<FileItem> it = items.iterator(); it.hasNext() && !found;)
                     {
                         fi = (FileItem) it.next();
-                        if (fi.getFieldName().equals(FORM_TAG_FILE)) 
+                        if (fi.getFieldName().equals(FORM_TAG_FILE))
                         {
-                        	found = true;
-                        	break;
+                            found = true;
+                            break;
                         }
                     }
                     // Once handled, the content of the uploaded file is sent
                     // back to the client.
                     Representation rep = null;
-                    if (found) 
+                    if (found)
                     {
                         // Create a new representation based on disk file.
                         // The content is arbitrarily sent as plain text.
@@ -107,16 +107,16 @@ public class UploadResource extends ServerResource
                                 MediaType.TEXT_HTML);
                         getResponse().setEntity(rep);
                         getResponse().setStatus(Status.SUCCESS_OK);
-                    } 
-                    else 
+                    }
+                    else
                     {
                         rep = new StringRepresentation("No file data found",
                                 MediaType.TEXT_HTML);
                         getResponse().setEntity(rep);
                         getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                     }
-                } 
-                catch (Exception e) 
+                }
+                catch (Exception e)
                 {
                     // The message of all thrown exception is sent back to
                     // client as simple plain text
@@ -126,8 +126,8 @@ public class UploadResource extends ServerResource
                     getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 }
             }
-        } 
-        else 
+        }
+        else
         {
             // POST request with no entity.
             getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
