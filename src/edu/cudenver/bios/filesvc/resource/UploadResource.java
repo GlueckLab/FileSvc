@@ -98,21 +98,16 @@ public class UploadResource extends ServerResource
                     }
                     // Once handled, the content of the uploaded file is sent
                     // back to the client.
-                    Representation rep = null;
                     if (found)
                     {
                         // Create a new representation based on disk file.
                         // The content is arbitrarily sent as plain text.
-                        rep = new StringRepresentation(fi.getString(),
-                                MediaType.TEXT_HTML);
-                        getResponse().setEntity(rep);
+                        getResponse().setEntity(new StringRepresentation(fi.getString()));
                         getResponse().setStatus(Status.SUCCESS_OK);
                     }
                     else
                     {
-                        rep = new StringRepresentation("No file data found",
-                                MediaType.TEXT_HTML);
-                        getResponse().setEntity(rep);
+                        getResponse().setEntity(new StringRepresentation("No file data found"));
                         getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                     }
                 }
@@ -120,9 +115,7 @@ public class UploadResource extends ServerResource
                 {
                     // The message of all thrown exception is sent back to
                     // client as simple plain text
-                    getResponse().setEntity(
-                            new StringRepresentation("Upload failed: " + e.getMessage(),
-                                    MediaType.TEXT_HTML));
+                    getResponse().setEntity(new StringRepresentation("Upload failed: " + e.getMessage()));
                     getResponse().setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 }
             }
